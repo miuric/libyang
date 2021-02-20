@@ -8608,7 +8608,7 @@ resolve_unres_data(struct ly_ctx *ctx, struct unres_data *unres, struct lyd_node
         }
         progress = 0;
         for (i = 0; i < unres->count; i++) {
-            if (unres->type[i] != UNRES_WHEN) {
+            if (unres->type[i] != UNRES_WHEN && unres->type[i] != UNRES_LEAFREF) {
                 continue;
             }
             if (first) {

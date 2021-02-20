@@ -4487,7 +4487,7 @@ yyreduce:
                                                                           actual = &(((struct yang_type *)(yyvsp[-2].backup_token).actual)->type->info.str.patterns_pcre)[2 * (((struct yang_type *)(yyvsp[-2].backup_token).actual)->type->info.str.pat_count - 1)];
                                                                         }
 #endif
-                                                                        if (yang_read_pattern(trg->ctx, pattern, actual, (yyvsp[-1].str), (yyvsp[0].ch))) {
+                                                                        if (yang_read_pattern(trg, pattern, actual, (yyvsp[-1].str), (yyvsp[0].ch))) {
                                                                           YYABORT;
                                                                         }
                                                                         actual_type = (yyvsp[-2].backup_token).token;

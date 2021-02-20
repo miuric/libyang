@@ -1178,23 +1178,36 @@ error:
 }
 
 int
-yang_read_pattern(struct ly_ctx *ctx, struct lys_restr *pattern, void **precomp, char *value, char modifier)
+yang_read_pattern(struct lys_module *module, struct lys_restr *pattern, void **precomp, char *value, char modifier)
 {
     char *buf;
     size_t len;
+    char *orig_value;
+    struct ly_ctx *ctx = module->ctx;
+
+    // YDK:ygorelik: Change pattern for openconfig modules
+    // by removing '^' in the beginning and '$' at the end of the pattern value
+    len = strlen(value);
+    orig_value = value;
+    if (strlen(module->name) >= strlen("openconfig") && value[0]=='^' && value[len-1]=='$' &&
+        memcmp(module->name, "openconfig", strlen("openconfig")) == 0)
+    {
+        value[len-1] = 0;
+        value = value + 1;
+        len = len - 2;
+    }
 
     if (precomp && lyp_precompile_pattern(ctx, value, (pcre**)&precomp[0], (pcre_extra**)&precomp[1])) {
         free(value);
         return EXIT_FAILURE;
     }
 
-    len = strlen(value);
     buf = malloc((len + 2) * sizeof *buf); /* modifier byte + value + terminating NULL byte */
     LY_CHECK_ERR_RETURN(!buf, LOGMEM(ctx); free(value), EXIT_FAILURE);
 
     buf[0] = modifier;
     strcpy(&buf[1], value);
-    free(value);
+    free(orig_value);
 
     pattern->expr = lydict_insert_zc(ctx, buf);
     return EXIT_SUCCESS;
@@ -2888,16 +2901,23 @@ yang_read_string(struct ly_ctx *ctx, const char *input, char *output, int size, 
                 output[out_index] = '\n';
             } else if (input[i + 1] == 't') {
                 output[out_index] = '\t';
-            } else if (input[i + 1] == '\\') {
+            } else if (input[i + 1] == '\\' || input[i + 1] == '.' || input[i + 1] == '-') {
                 output[out_index] = '\\';
             } else if ((i + 1) != size && input[i + 1] == '"') {
                 output[out_index] = '"';
             } else {
-                /* backslash must not be followed by any other character */
+                /* backslash must not be followed by any other character,
+                   except it is escape character processed above */
                 LOGVAL(ctx, LYE_XML_INCHAR, LY_VLOG_NONE, NULL, input + i);
                 return NULL;
             }
             ++i;
+            break;
+        case '"':
+            if (i < size-1) {
+                output[out_index] = input[i];
+                space = 0;
+            }
             break;
         default:
             output[out_index] = input[i];

@@ -332,7 +332,8 @@ repeat:
             return NULL;
         }
         last = lys_parent(last);
-        next = last->next;
+        if (last)
+            next = last->next;
         goto repeat;
     } else {
         last = next;

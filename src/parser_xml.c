@@ -33,6 +33,8 @@ static struct lys_node *
 xml_data_search_schemanode(struct lyxml_elem *xml, struct lys_node *start, int options)
 {
     struct lys_node *result, *aux;
+    struct lys_node_augment *aug;
+    int j;
 
     LY_TREE_FOR(start, result) {
         /* skip groupings ... */
@@ -63,6 +65,16 @@ xml_data_search_schemanode(struct lyxml_elem *xml, struct lys_node *start, int o
             if (ly_strequal(lys_main_module(result->module)->ns, xml->ns->value, 1)) {
                 /* we have matching result */
                 return result;
+            }
+            else if (result->module->augment_size) {
+                /* it still can be an augment from another module */
+                for (j = 0; j < result->module->augment_size; ++j) {
+                    aug = &result->module->augment[j];
+                    if (ly_strequal(aug->child->name, xml->name, 1) &&
+                        ly_strequal(result->parent->name, aug->target_name, 1)) {
+                        return result;
+                    }
+                }
             }
             /* else, continue with next schema node */
             continue;
