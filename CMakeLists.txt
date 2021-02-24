@@ -225,7 +225,7 @@ endif()
 set_target_properties(yang PROPERTIES VERSION ${LIBYANG_SOVERSION_FULL} SOVERSION ${LIBYANG_SOVERSION})
 
 # link math
-target_link_libraries(yang m)
+#target_link_libraries(yang m)
 
 # find pthreads
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
@@ -319,13 +319,13 @@ install(TARGETS yanglint DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES ${PROJECT_SOURCE_DIR}/tools/lint/yanglint.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 #yangre
-add_executable(yangre ${resrc} $<TARGET_OBJECTS:compat>)
-target_link_libraries(yangre yang)
-install(TARGETS yangre DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(FILES ${PROJECT_SOURCE_DIR}/tools/re/yangre.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+#add_executable(yangre ${resrc} $<TARGET_OBJECTS:compat>)
+#target_link_libraries(yangre yang)
+#install(TARGETS yangre DESTINATION ${CMAKE_INSTALL_BINDIR})
+#install(FILES ${PROJECT_SOURCE_DIR}/tools/re/yangre.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 # yang2yin
-add_executable(yang2yin ${yang2yinsrc})
+#add_executable(yang2yin ${yang2yinsrc})
 
 # packages
 add_subdirectory(packages)
