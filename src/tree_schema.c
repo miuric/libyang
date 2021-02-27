@@ -5462,7 +5462,9 @@ lys_extension_instances_free(struct ly_ctx *ctx, struct lys_ext_instance **e, un
             if (e[i]->priv && private_destructor) {
                 private_destructor((struct lys_node*)e[i], e[i]->priv);
             }
-            lys_extension_instances_free(ctx, e[i]->ext, e[i]->ext_size, private_destructor);
+            if (e[i]->ext && e[i]->ext_size) {
+                lys_extension_instances_free(ctx, e[i]->ext, e[i]->ext_size, private_destructor);
+            }
             lydict_remove(ctx, e[i]->arg_value);
         }
 
