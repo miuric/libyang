@@ -124,7 +124,8 @@ json_print_attrs(struct lyout *out, int level, const struct lyd_node *node, cons
             break;
 
         case LY_TYPE_EMPTY:
-            ly_print(out, "%s", "");
+            // ly_print(out, "[null]");
+            ly_print(out, "null");
             break;
 
         default:
@@ -178,9 +179,18 @@ contentprint:
     case LY_TYPE_INST:
     case LY_TYPE_INT64:
     case LY_TYPE_UINT64:
-    case LY_TYPE_UNION:
     case LY_TYPE_DEC64:
         json_print_string(out, leaf->value_str);
+        break;
+
+    case LY_TYPE_UNION:
+        if (leaf->value_str[0] == '\0') {
+            // Assuming the leaf value type is LY_TYPE_EMPTY
+            ly_print(out, "null");
+        }
+        else {
+            json_print_string(out, leaf->value_str);
+        }
         break;
 
     case LY_TYPE_INT8:
@@ -225,7 +235,8 @@ contentprint:
         goto contentprint;
 
     case LY_TYPE_EMPTY:
-        ly_print(out, "[null]");
+        // ly_print(out, "[null]");
+        ly_print(out, "null");
         break;
 
     case LY_TYPE_UNKNOWN:
