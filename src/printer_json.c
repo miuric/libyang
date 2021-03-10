@@ -124,7 +124,7 @@ json_print_attrs(struct lyout *out, int level, const struct lyd_node *node, cons
             break;
 
         case LY_TYPE_EMPTY:
-            ly_print(out, "[null]");
+            ly_print(out, "%s", "");
             break;
 
         default:
