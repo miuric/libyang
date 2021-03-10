@@ -537,6 +537,9 @@ repeat:
         }
         leaf->value_str = lydict_insert(ctx, "", 0);
         len = r + 1;
+    } else if (!strncmp(&data[len], "null", 4)) {
+        leaf->value_str = lydict_insert(ctx, "", 0);
+        len += 4;
     } else {
 inval:
         /* error */
