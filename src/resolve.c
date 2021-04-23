@@ -1,4 +1,4 @@
-/**
+case UNRES_TYPE_DFLT:/**
  * @file resolve.c
  * @author Michal Vasko <mvasko@cesnet.cz>
  * @brief libyang resolve functions
@@ -6627,6 +6627,7 @@ featurecheckdone:
         parent_type++;
         /* falls through */
     case UNRES_TYPE_DFLT:
+        node = (struct lys_node *)item;
         stype = item;
         rc = check_default(stype, (const char **)str_snode, mod, parent_type);
         break;
